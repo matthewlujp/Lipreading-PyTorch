@@ -61,7 +61,7 @@ class Trainer():
 
         #transfer the model to the GPU.
         if(self.usecudnn):
-            criterion = criterion.cuda(self.gpuid)
+            criterion = criterion.cuda()
 
         startTime = datetime.now()
         print("Starting training...")
@@ -71,8 +71,8 @@ class Trainer():
             labels = Variable(sample_batched['label'])
 
             if(self.usecudnn):
-                input = input.cuda(self.gpuid)
-                labels = labels.cuda(self.gpuid)
+                input = input.cuda()
+                labels = labels.cuda()
 
             outputs = model(input)
             loss = criterion(outputs, labels.squeeze(1))

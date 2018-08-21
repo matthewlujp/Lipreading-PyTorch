@@ -1,6 +1,7 @@
 from __future__ import print_function
 from models import LipRead
 import torch
+import torch.nn as nn
 import toml
 from training import Trainer
 from validation import Validator
@@ -21,10 +22,13 @@ if(options["general"]["loadpretrainedmodel"]):
 
 #Move the model to the GPU.
 if(options["general"]["usecudnn"]):
-    model = model.cuda(options["general"]["gpuid"])
+    model = nn.DataParallel(model).cuda()
 
-trainer = Trainer(options)
-validator = Validator(options)
+if options["training"]["train"]:
+    trainer = Trainer(options)
+
+if(options["validation"]["validate"]):
+    validator = Validator(options)
 
 for epoch in range(options["training"]["startepoch"], options["training"]["epochs"]):
 
@@ -32,4 +36,4 @@ for epoch in range(options["training"]["startepoch"], options["training"]["epoch
         trainer.epoch(model, epoch)
 
     if(options["validation"]["validate"]):
-        validator.epoch(model)
+        validator.epoch(model, epoch)

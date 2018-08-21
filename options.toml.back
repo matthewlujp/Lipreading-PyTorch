@@ -10,12 +10,12 @@ savemodel = true
 modelsavepath = "savedmodel.pt"
 
 [input]
-batchsize = 64
+batchsize = 18
 numworkers = 18
 shuffle = true
 
 [model]
-type = "temp-conv"
+type = "LSTM"
 inputdim = 256
 hiddendim = 256
 numclasses = 500
@@ -23,8 +23,8 @@ numlstms = 2
 
 [training]
 train = true
-epochs = 30
-startepoch = 0
+epochs = 15
+startepoch = 10
 statsfrequency = 1000
 dataset = "/udisk/pszts-ssd/AV-ASR-data/BBC_Oxford/lipread_mp4"
 learningrate = 0.003

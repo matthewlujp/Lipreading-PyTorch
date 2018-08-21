@@ -9,8 +9,7 @@ import os
 class Validator():
     def __init__(self, options):
 
-        self.validationdataset = LipreadingDataset("/udisk/pszts-ssd/AV-ASR-data/BBC_Oxford/lipread_mp4",
-                                    "val", False)
+        self.validationdataset = LipreadingDataset(options["validation"]["dataset"], "val", False)
         self.validationdataloader = DataLoader(
                                     self.validationdataset,
                                     batch_size=options["input"]["batchsize"],
@@ -26,7 +25,7 @@ class Validator():
 
         self.gpuid = options["general"]["gpuid"]
 
-    def epoch(self, model):
+    def epoch(self, model, epoch):
         print("Starting validation...")
         count = 0
         validator_function = model.validator_function()
@@ -47,5 +46,5 @@ class Validator():
 
 
         accuracy = count / len(self.validationdataset)
-        with open("accuracy.txt", "a") as outputfile:
+        with open("accuracy_ep{}.txt".format(epoch), "a") as outputfile:
             outputfile.write("\ncorrect count: {}, total count: {} accuracy: {}" .format(count, len(self.validationdataset), accuracy ))
