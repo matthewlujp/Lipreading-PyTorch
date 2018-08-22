@@ -47,5 +47,5 @@ class Validator():
 
 
         accuracy = count / len(self.validationdataset)
-        with open("accuracy_ep{}.txt".format(epoch), "a") as outputfile:
+        with open("accuracy.txt", "a") as outputfile:
             outputfile.write("\nepoch {} --- correct count: {}, total count: {} accuracy: {}" .format(epoch, count, len(self.validationdataset), accuracy ))
