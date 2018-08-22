@@ -6,6 +6,7 @@ from data import LipreadingDataset
 from torch.utils.data import DataLoader
 import os
 import math
+from tqdm import trange
 
 def timedelta_string(timedelta):
     totalSeconds = int(timedelta.total_seconds())
@@ -20,6 +21,11 @@ def output_iteration(i, time, totalitems):
     estTime = avgBatchTime * (totalitems - i)
 
     print("Iteration: {}\nElapsed Time: {} \nEstimated Time Remaining: {}".format(i, timedelta_string(time), timedelta_string(estTime)))
+
+def estimate_remaining_time(i, time, totalitems):
+    avgBatchTime = time / (i+1)
+    estTime = avgBatchTime * (totalitems - i)
+    return timedelta_string(estTime)
 
 class Trainer():
     def __init__(self, options):
@@ -58,6 +64,7 @@ class Trainer():
                         lr = self.learningRate(epoch),
                         momentum = self.learningrate,
                         weight_decay = self.weightdecay)
+        validator_function = model.validator_function()
 
         #transfer the model to the GPU.
         if(self.usecudnn):
@@ -65,7 +72,12 @@ class Trainer():
 
         startTime = datetime.now()
         print("Starting training...")
-        for i_batch, sample_batched in enumerate(self.trainingdataloader):
+
+        correct_count = 0
+        summed_loss = 0
+        total_samples = 0
+        
+        for i_batch, sample_batched in enumerate(trange(self.trainingdataloader), nclos=80):
             optimizer.zero_grad()
             input = Variable(sample_batched['temporalvolume'])
             labels = Variable(sample_batched['label'])
@@ -79,11 +91,14 @@ class Trainer():
 
             loss.backward()
             optimizer.step()
-            sampleNumber = i_batch * self.batchsize
 
-            if(sampleNumber % self.statsfrequency == 0):
-                currentTime = datetime.now()
-                output_iteration(sampleNumber, currentTime - startTime, len(self.trainingdataset))
+            correct_count += validator_function(outputs, labels)
+            summed_loss += loss.data * len(sample_batched)
+            total_samples += len(sample_batched)
 
-        print("Epoch completed, saving state...")
+            t.set_description("Epoch {:02}".format(epoch))
+            estimated_remaining_time = estimate_remaining_time(total_samples, datetime.now() - startTime, len(self.trainingdataset))
+            t.set_postfix(loss=summed_loss/total_samples, accuracy=correct_count/total_samples, remaining_time=estimated_remaining_time)
+
+        print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(summed_loss/total_samples, correct_count/total_samples))
         torch.save(model.state_dict(), "trainedmodel.pt")

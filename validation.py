@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from data import LipreadingDataset
 from torch.utils.data import DataLoader
 import os
+from tqdm import trange
 
 class Validator():
     def __init__(self, options):
@@ -30,13 +31,13 @@ class Validator():
         count = 0
         validator_function = model.validator_function()
 
-        for i_batch, sample_batched in enumerate(self.validationdataloader):
+        for i_batch, sample_batched in enumerate(trange(self.validationdataloader, ncols=80)):
             input = Variable(sample_batched['temporalvolume'])
             labels = sample_batched['label']
 
             if(self.usecudnn):
-                input = input.cuda(self.gpuid)
-                labels = labels.cuda(self.gpuid)
+                input = input.cuda()
+                labels = labels.cuda()
 
             outputs = model(input)
 
@@ -47,4 +48,4 @@ class Validator():
 
         accuracy = count / len(self.validationdataset)
         with open("accuracy_ep{}.txt".format(epoch), "a") as outputfile:
-            outputfile.write("\ncorrect count: {}, total count: {} accuracy: {}" .format(count, len(self.validationdataset), accuracy ))
+            outputfile.write("\nepoch {} --- correct count: {}, total count: {} accuracy: {}" .format(epoch, count, len(self.validationdataset), accuracy ))
