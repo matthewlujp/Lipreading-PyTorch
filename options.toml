@@ -4,10 +4,12 @@ title = "TOML Example"
 usecudnn = true
 usecudnnbenchmark = true
 gpuid = 1
-loadpretrainedmodel = false
-pretrainedmodelpath = "trainedmodel.pt"
+load_pretrained_model = false
+train_target = "frontend"
+frontend_pretrained_model_path = "frontend_trained_model.pt"
+backend_pretrained_model_path = "backend_trained_model.pt"
 savemodel = true
-modelsavepath = "savedmodel.pt"
+model_save_path = "savedmodel.pt"
 
 [input]
 batchsize = 64

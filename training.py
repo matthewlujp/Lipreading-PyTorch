@@ -52,6 +52,8 @@ class Trainer():
         self.weightdecay = options["training"]["weightdecay"]
         self.momentum = options["training"]["momentum"]
 
+        self.model_save_path = options["general"]["model_save_path"]
+
     def learningRate(self, epoch):
         decay = math.floor((epoch - 1) / 5)
         return self.learningrate * pow(0.5, decay)
@@ -101,4 +103,4 @@ class Trainer():
             t.set_postfix(loss=summed_loss/total_samples, accuracy=correct_count/total_samples, remaining_time=estimated_remaining_time)
 
         print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(summed_loss/total_samples, correct_count/total_samples))
-        torch.save(model.state_dict(), "trainedmodel.pt")
+        torch.save(model.state_dict(), self.model_save_path)
