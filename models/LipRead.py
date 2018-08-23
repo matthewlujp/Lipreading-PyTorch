@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
+import torch.cuda as cuda
 
 import re
 
@@ -19,17 +20,14 @@ class LipRead(nn.Module):
         self.lstm = LSTMBackend(options)
 
         self.type = options["model"]["type"]
+        if self.type == "temp-conv":
+            self.model = nn.Sequential(self.frontend, self.resnet, self.backend)
+        elif self.type == "LSTM":
+            self.model = nn.Sequential(self.frontend, self.resnet, self.lstm)
 
-        def freeze(m):
-            m.requires_grad=False
-
-        if(options["model"]["type"] == "LSTM-init"):
-            self.frontend.apply(freeze)
-            self.resnet.apply(freeze)
-
-
-        self.frontend.apply(freeze)
-        self.resnet.apply(freeze)
+        if cuda.device_count() > 1:
+            print("{} gpus detected. running on multiple gpus".format(cuda.device_count()))
+            self.model = nn.DataParallel(self.model)
 
         #function to initialize the weights and biases of each module. Matches the
         #classname with a regular expression to determine the type of the module, then
@@ -48,13 +46,7 @@ class LipRead(nn.Module):
         self.apply(weights_init)
 
     def forward(self, input):
-        if(self.type == "temp-conv"):
-            output = self.backend(self.resnet(self.frontend(input)))
-
-        if(self.type == "LSTM" or self.type == "LSTM-init"):
-            output = self.lstm(self.resnet(self.frontend(input)))
-
-        return output
+        return self.model.forward(input)
 
     def loss(self):
         if(self.type == "temp-conv"):
