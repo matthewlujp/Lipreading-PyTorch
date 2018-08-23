@@ -3,13 +3,11 @@ title = "TOML Example"
 [general]
 usecudnn = true
 usecudnnbenchmark = true
-gpuid = 1
 load_pretrained_model = false
 train_target = "frontend"
 frontend_pretrained_model_path = "frontend_trained_model.pt"
 backend_pretrained_model_path = "backend_trained_model.pt"
 savemodel = true
-model_save_path = "savedmodel.pt"
 
 [input]
 batchsize = 64
@@ -28,13 +26,12 @@ train = true
 epochs = 30
 startepoch = 0
 statsfrequency = 1000
-dataset = "/udisk/pszts-ssd/AV-ASR-data/BBC_Oxford/lipread_mp4"
+dataset = "./lipread_mp4"
 learningrate = 0.003
 momentum = 0.9
 weightdecay = 0.0001
 
 [validation]
 validate = true
-dataset = "/udisk/pszts-ssd/AV-ASR-data/BBC_Oxford/lipread_mp4"
+dataset = "./lipread_mp4"
 saveaccuracy = true
-accuracyfilelocation = "accuracy.txt"

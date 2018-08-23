@@ -8,7 +8,7 @@ import os
 from tqdm import trange
 
 class Validator():
-    def __init__(self, options):
+    def __init__(self, options, save_dir):
 
         self.validationdataset = LipreadingDataset(options["validation"]["dataset"], "val", False)
         self.validationdataloader = DataLoader(
@@ -22,9 +22,7 @@ class Validator():
 
         self.batchsize = options["input"]["batchsize"]
 
-        self.statsfrequency = options["training"]["statsfrequency"]
-
-        self.gpuid = options["general"]["gpuid"]
+        self.save_dir = save_dir
 
     def epoch(self, model, epoch):
         print("Starting validation...")
@@ -47,5 +45,5 @@ class Validator():
 
 
         accuracy = count / len(self.validationdataset)
-        with open("accuracy.txt", "a") as outputfile:
+        with open(os.path.join(self.save_dir, "accuracy.txt"), "a") as outputfile:
             outputfile.write("\nepoch {} --- correct count: {}, total count: {} accuracy: {}" .format(epoch, count, len(self.validationdataset), accuracy ))
