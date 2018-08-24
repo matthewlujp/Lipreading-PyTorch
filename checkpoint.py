@@ -12,7 +12,7 @@ def save_checkpoint(save_dir_path: str, epoch: int, model: nn.Module, **kwargs):
 
     states = {'state_dict': model.state_dict(), 'grad_states': grad_states, 'epoch': epoch}
     states.update(kwargs)
-    torch.save(state, os.path.join(save_dir_path, "checkpoint_ep{}.pt".format(epoch)))
+    torch.save(states, os.path.join(save_dir_path, "checkpoint_ep{}.pt".format(epoch)))
 
 
 def load_checkpoint(filename: str) -> tuple:

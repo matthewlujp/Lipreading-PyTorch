@@ -8,24 +8,19 @@ import os
 import math
 from tqdm import tqdm
 
-def timedelta_string(timedelta):
+
+def timedelta_string(timedelta: timedelta) -> str:
     totalSeconds = int(timedelta.total_seconds())
     hours, remainder = divmod(totalSeconds,60*60)
     minutes, seconds = divmod(remainder,60)
-    return "{} hrs, {} mins, {} secs".format(hours, minutes, seconds)
+    return "{}:{}:{}".format(hours, minutes, seconds)
 
-def output_iteration(i, time, totalitems):
-    os.system('clear')
-
-    avgBatchTime = time / (i+1)
-    estTime = avgBatchTime * (totalitems - i)
-
-    print("Iteration: {}\nElapsed Time: {} \nEstimated Time Remaining: {}".format(i, timedelta_string(time), timedelta_string(estTime)))
 
 def estimate_remaining_time(i, time, totalitems):
     avgBatchTime = time / (i+1)
     estTime = avgBatchTime * (totalitems - i)
     return timedelta_string(estTime)
+
 
 class Trainer():
     def __init__(self, options):
@@ -69,35 +64,35 @@ class Trainer():
             criterion = criterion.cuda()
 
         startTime = datetime.now()
-        print("Starting training...")
 
         correct_count = 0
         summed_loss = 0
         total_samples = 0
         
-        for i_batch, sample_batched in enumerate(tqdm(self.trainingdataloader, nclos=80)):
-            optimizer.zero_grad()
-            input = Variable(sample_batched['temporalvolume'])
-            labels = Variable(sample_batched['label'])
+        with tqdm(total=len(self.trainingdataloader), desc="Epoch {:02}".format(epoch), ascii=False, ncols=150) as t:
+            for i_batch, sample_batched in enumerate(self.trainingdataloader):
+                optimizer.zero_grad()
+                input = Variable(sample_batched['temporalvolume'])
+                labels = Variable(sample_batched['label'])
 
-            if(self.usecudnn):
-                input = input.cuda()
-                labels = labels.cuda()
+                if(self.usecudnn):
+                    input = input.cuda()
+                    labels = labels.cuda()
 
-            outputs = model(input)
-            loss = criterion(outputs, labels.squeeze(1))
+                outputs = model(input)
+                loss = criterion(outputs, labels.squeeze(1))
 
-            loss.backward()
-            optimizer.step()
+                loss.backward()
+                optimizer.step()
 
-            correct_count += validator_function(outputs, labels)
-            summed_loss += loss.data * len(sample_batched)
-            total_samples += len(sample_batched)
+                correct_count += validator_function(outputs, labels)
+                summed_loss += loss.data * len(sample_batched)
+                total_samples += len(sample_batched)
 
-            t.set_description("Epoch {:02}".format(epoch))
-            estimated_remaining_time = estimate_remaining_time(total_samples, datetime.now() - startTime, len(self.trainingdataset))
-            t.set_postfix(loss=summed_loss/total_samples, accuracy=correct_count/total_samples, remaining_time=estimated_remaining_time)
+                estimated_remaining_time = estimate_remaining_time(i_batch, datetime.now() - startTime, len(self.trainingdataset))
+                t.set_postfix(loss=float(summed_loss.data)/total_samples, acc=correct_count/total_samples, rest_time=estimated_remaining_time)
+                t.update()
 
-        print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(summed_loss/total_samples, correct_count/total_samples))
+        print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(float(summed_loss.data)/total_samples, correct_count/total_samples))
 
-        return summed_loss/total_samples
+        return float(summed_loss.data)/total_samples

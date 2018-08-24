@@ -25,6 +25,9 @@ class LipRead(nn.Module):
         elif self.type == "LSTM":
             self.model = nn.Sequential(self.frontend, self.resnet, self.lstm)
 
+        if cuda.is_available():
+            self.model = self.model.cuda()
+
         if cuda.device_count() > 1:
             print("{} gpus detected. running on multiple gpus".format(cuda.device_count()))
             self.model = nn.DataParallel(self.model)

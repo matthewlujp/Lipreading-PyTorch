@@ -3,15 +3,14 @@ title = "TOML Example"
 [general]
 usecudnn = true
 usecudnnbenchmark = true
-load_pretrained_model = false
 train_target = "frontend"
 frontend_pretrained_model_path = "frontend_trained_model.pt"
 savemodel = true
 
 [input]
-batchsize = 32
+batchsize = 128
 frameslen = 29
-numworkers = 18
+numworkers = 31
 shuffle = true
 
 [model]
@@ -26,12 +25,12 @@ train = true
 epochs = 30
 startepoch = 0
 statsfrequency = 1000
-dataset = "./lipread_mp4"
+dataset = ""
 learningrate = 0.003
 momentum = 0.9
 weightdecay = 0.0001
 
 [validation]
 validate = true
-dataset = "./lipread_mp4"
+dataset = ""
 saveaccuracy = true

@@ -52,7 +52,7 @@ def create_result_dir(run_name: str, root_dir=None) -> str:
 if __name__ == '__main__':
     parser = ArgumentParser(description="train LipReading-ResNet")
     parser.add_argument("--run_name", dest="run_name", default=None)
-    parser.add_argument("--checkpoint_file", dest="checkpoint_file", default=None)
+    parser.add_argument("--checkpoint", dest="checkpoint_file", default=None)
     parser.add_argument("--final_epoch", dest="final_epoch", default=None)
     parser.add_argument("--root_dir", dest="root_dir", default=None)
     args = parser.parse_args()
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     # for saving training metrics
     run_name = create_run_name() if args.run_name is None else args.run_name
     result_dir = create_result_dir(run_name, args.root_dir)
-    csv = CSVSaver(os.path.join(result_dir, "stats"), "accuracy", "loss")
+    csv = CSVSaver(os.path.join(result_dir, "stats.csv"), "accuracy", "loss")
 
     if args.checkpoint_file is None:
         print("Loading options...")
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         if options["general"]["train_target"] == 'backend':
             load_pretrained(model, options["general"]["frontend_pretrained_modelpath"], freeze=True)
     else:
-        state_dict, grad_states, states = load_chekpoint(args.checkpoint_file)
+        state_dict, grad_states, states = load_checkpoint(args.checkpoint_file)
         options = states['options']
         model = LipRead(options)
         load_model(model, state_dict, grad_states) # load weights and freeze states
@@ -95,8 +95,8 @@ if __name__ == '__main__':
     for epoch in range(last_epoch + 1, final_epoch):
         loss = trainer.epoch(model, epoch) if options["training"]["train"] else ''
         accuracy = validator.epoch(model, epoch) if options["validation"]["validate"] else ''
-        csv.add(epoch, accuray=accuracy, loss=loss)
-        save_checkpoint(os.path.join(result_dir, epoch, model, options=options))
+        csv.add(epoch, accuracy=accuracy, loss=loss)
+        save_checkpoint(result_dir, epoch, model, options=options)
 
     # save the final model 
     torch.save(model.state_dict(), os.path.join(result_dir, "epoch{}.pt".format(epoch)))
