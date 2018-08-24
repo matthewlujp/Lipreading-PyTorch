@@ -54,7 +54,7 @@ if __name__ == '__main__':
     parser.add_argument("--run_name", dest="run_name", default=None)
     parser.add_argument("--checkpoint_file", dest="checkpoint_file", default=None)
     parser.add_argument("--final_epoch", dest="final_epoch", default=None)
-    parser.add_argument("--root_dir", dest=root_dir, default=None)
+    parser.add_argument("--root_dir", dest="root_dir", default=None)
     args = parser.parse_args()
 
     # for saving training metrics
