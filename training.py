@@ -28,7 +28,7 @@ def estimate_remaining_time(i, time, totalitems):
     return timedelta_string(estTime)
 
 class Trainer():
-    def __init__(self, options, model_save_dir):
+    def __init__(self, options):
         self.trainingdataset = LipreadingDataset(options["training"]["dataset"], "train")
         self.trainingdataloader = DataLoader(
                                     self.trainingdataset,
@@ -49,8 +49,6 @@ class Trainer():
 
         self.weightdecay = options["training"]["weightdecay"]
         self.momentum = options["training"]["momentum"]
-
-        self.model_save_dir = model_save_dir
 
     def learningRate(self, epoch):
         decay = math.floor((epoch - 1) / 5)
@@ -101,6 +99,5 @@ class Trainer():
             t.set_postfix(loss=summed_loss/total_samples, accuracy=correct_count/total_samples, remaining_time=estimated_remaining_time)
 
         print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(summed_loss/total_samples, correct_count/total_samples))
-        torch.save(model.state_dict(), os.path.join(self.model_save_dir, "epoch{}.pt".format(epoch)))
 
         return summed_loss/total_samples

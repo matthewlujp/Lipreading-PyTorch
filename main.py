@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
 
     if options["training"]["train"]:
-        trainer = Trainer(options, model_dict)
+        trainer = Trainer(options)
     if(options["validation"]["validate"]):
         validator = Validator(options, result_dir)
 
@@ -97,3 +97,6 @@ if __name__ == '__main__':
         accuracy = validator.epoch(model, epoch) if options["validation"]["validate"] else ''
         csv.add(epoch, accuray=accuracy, loss=loss)
         save_checkpoint(os.path.join(result_dir, epoch, model, options=options))
+
+    # save the final model 
+    torch.save(model.state_dict(), os.path.join(result_dir, "epoch{}.pt".format(epoch)))
