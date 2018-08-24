@@ -1,6 +1,7 @@
 from torch.autograd import Variable
 import torch
 import torch.optim as optim
+import torch.cuda as cuda
 from datetime import datetime, timedelta
 from data import LipreadingDataset
 from torch.utils.data import DataLoader
@@ -75,7 +76,7 @@ class Trainer():
                 input = Variable(sample_batched['temporalvolume'])
                 labels = Variable(sample_batched['label'])
 
-                if(self.usecudnn):
+                if cuda.is_available() and self.usecudnn:
                     input = input.cuda()
                     labels = labels.cuda()
 
@@ -87,7 +88,7 @@ class Trainer():
 
                 correct_count += validator_function(outputs, labels)
                 summed_loss += loss.data * len(sample_batched)
-                total_samples += len(sample_batched)
+                total_samples += len(sample_batched['label'])
 
                 estimated_remaining_time = estimate_remaining_time(i_batch, datetime.now() - startTime, len(self.trainingdataset))
                 t.set_postfix(loss=float(summed_loss.data)/total_samples, acc=correct_count/total_samples, rest_time=estimated_remaining_time)

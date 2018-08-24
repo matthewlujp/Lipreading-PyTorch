@@ -40,7 +40,7 @@ def create_result_dir(run_name: str, root_dir=None) -> str:
     """Create result dir and return its absolute path
     """
     if root_dir is None:
-        root_dir = os.path.dirname(os.path.real_path(__file__))
+        root_dir = os.path.dirname(os.path.realpath(__file__))
     
     result_dir = os.path.join(root_dir, run_name)
     if os.path.exists(result_dir):
