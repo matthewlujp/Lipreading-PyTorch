@@ -45,7 +45,7 @@ def create_result_dir(run_name: str, root_dir=None) -> str:
     result_dir = os.path.join(root_dir, run_name)
     if os.path.exists(result_dir):
         raise Exception("directory {} already exists".format(result_dir))
-    os.makedir(result_dir)
+    os.makedirs(result_dir)
     return result_dir
 
 
