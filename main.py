@@ -33,7 +33,7 @@ def load_pretrained(model: nn.Module, pretrained_model_filepath: str, freeze: bo
 
 
 def create_run_name() -> str:
-    run_name = datetime.datetime.now().strftime('%Y:%m:%d:%H:%M:%S')
+    return datetime.datetime.now().strftime('%Y:%m:%d:%H:%M:%S')
 
 
 def create_result_dir(run_name: str, root_dir=None) -> str:
@@ -41,7 +41,7 @@ def create_result_dir(run_name: str, root_dir=None) -> str:
     """
     if root_dir is None:
         root_dir = os.path.dirname(os.path.real_path(__file__))
-
+    
     result_dir = os.path.join(root_dir, run_name)
     if os.path.exists(result_dir):
         raise Exception("directory {} already exists".format(result_dir))
