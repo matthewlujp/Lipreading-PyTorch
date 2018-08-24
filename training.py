@@ -8,19 +8,7 @@ from torch.utils.data import DataLoader
 import os
 import math
 from tqdm import tqdm
-
-
-def timedelta_string(timedelta: timedelta) -> str:
-    totalSeconds = int(timedelta.total_seconds())
-    hours, remainder = divmod(totalSeconds,60*60)
-    minutes, seconds = divmod(remainder,60)
-    return "{}:{}:{}".format(hours, minutes, seconds)
-
-
-def estimate_remaining_time(i, time, totalitems):
-    avgBatchTime = time / (i+1)
-    estTime = avgBatchTime * (totalitems - i)
-    return timedelta_string(estTime)
+from utils import *
 
 
 class Trainer():
@@ -90,7 +78,7 @@ class Trainer():
                 summed_loss += loss.data * len(sample_batched)
                 total_samples += len(sample_batched['label'])
 
-                estimated_remaining_time = estimate_remaining_time(i_batch, datetime.now() - startTime, len(self.trainingdataset))
+                estimated_remaining_time = estimate_remaining_time(i_batch, datetime.now() - startTime, len(self.trainingdataloader))
                 t.set_postfix(loss=float(summed_loss.data)/total_samples, acc=correct_count/total_samples, rest_time=estimated_remaining_time)
                 t.update()
 
