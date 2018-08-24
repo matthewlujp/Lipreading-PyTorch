@@ -6,7 +6,7 @@ from data import LipreadingDataset
 from torch.utils.data import DataLoader
 import os
 import math
-from tqdm import trange
+from tqdm import tqdm
 
 def timedelta_string(timedelta):
     totalSeconds = int(timedelta.total_seconds())
@@ -75,7 +75,7 @@ class Trainer():
         summed_loss = 0
         total_samples = 0
         
-        for i_batch, sample_batched in enumerate(trange(self.trainingdataloader), nclos=80):
+        for i_batch, sample_batched in enumerate(tqdm(self.trainingdataloader, nclos=80)):
             optimizer.zero_grad()
             input = Variable(sample_batched['temporalvolume'])
             labels = Variable(sample_batched['label'])
