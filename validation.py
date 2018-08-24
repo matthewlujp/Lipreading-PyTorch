@@ -24,7 +24,7 @@ class Validator():
 
         self.save_dir = save_dir
 
-    def epoch(self, model, epoch):
+    def epoch(self, model, epoch) -> float:
         print("Starting validation...")
         count = 0
         validator_function = model.validator_function()
@@ -47,3 +47,5 @@ class Validator():
         accuracy = count / len(self.validationdataset)
         with open(os.path.join(self.save_dir, "accuracy.txt"), "a") as outputfile:
             outputfile.write("\nepoch {} --- correct count: {}, total count: {} accuracy: {}" .format(epoch, count, len(self.validationdataset), accuracy ))
+
+        return accuracy

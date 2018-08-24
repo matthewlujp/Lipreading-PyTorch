@@ -247,18 +247,14 @@ class ResNetBBC(nn.Module):
     def __init__(self, options):
         super(ResNetBBC, self).__init__()
         self.inputdims = options["model"]["inputdim"]
-        self.batchsize = options["input"]["batchsize"]
-
-        self.resnetModel = resnet34(False, num_classes=self.inputdims)
+        self.resnetModel = resnet18(False, num_classes=self.inputdims)
 
     def forward(self, input):
-
-        transposed = input.transpose(1, 2).contiguous()
-
-        view = transposed.view(-1, 64, 28, 28)
-
-        output = self.resnetModel(view)
-
-        output = output.view(self.batchsize, -1, 256)
-
+        # input.shape == (batch_size, 64, frames_len, 28, 28)
+        frames_len = input.shape[2]
+        
+        transposed = input.transpose(1, 2).contiguous() # (batch_size, frames_len, 64, 28, 28)
+        view = transposed.view(-1, 64, 28, 28) # (batch_size x frames_len, 64, 28, 28)
+        output = self.resnetModel(view) # (batch_size x frames_len, 256)
+        output = output.view(-1, frames_len, 256)
         return output

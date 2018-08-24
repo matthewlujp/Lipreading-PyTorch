@@ -55,11 +55,7 @@ class LSTMBackend(nn.Module):
         self.validator = _validate
 
     def forward(self, input):
-
-        temporalDim = 1
-
         lstmOutput, _ = self.Module1(input)
-
         output = self.fc(lstmOutput)
         output = self.softmax(output)
 

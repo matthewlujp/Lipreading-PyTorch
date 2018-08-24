@@ -56,7 +56,7 @@ class Trainer():
         decay = math.floor((epoch - 1) / 5)
         return self.learningrate * pow(0.5, decay)
 
-    def epoch(self, model, epoch):
+    def epoch(self, model, epoch) -> float:
         #set up the loss function.
         criterion = model.loss()
         optimizer = optim.SGD(
@@ -102,3 +102,5 @@ class Trainer():
 
         print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(summed_loss/total_samples, correct_count/total_samples))
         torch.save(model.state_dict(), os.path.join(self.model_save_dir, "epoch{}.pt".format(epoch)))
+
+        return summed_loss/total_samples

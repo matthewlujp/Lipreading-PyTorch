@@ -6,11 +6,11 @@ usecudnnbenchmark = true
 load_pretrained_model = false
 train_target = "frontend"
 frontend_pretrained_model_path = "frontend_trained_model.pt"
-backend_pretrained_model_path = "backend_trained_model.pt"
 savemodel = true
 
 [input]
-batchsize = 64
+batchsize = 32
+frameslen = 29
 numworkers = 18
 shuffle = true
 
