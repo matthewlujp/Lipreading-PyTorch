@@ -54,11 +54,12 @@ if __name__ == '__main__':
     parser.add_argument("--run_name", dest="run_name", default=None)
     parser.add_argument("--checkpoint_file", dest="checkpoint_file", default=None)
     parser.add_argument("--final_epoch", dest="final_epoch", default=None)
+    parser.add_argument("--root_dir", dest=root_dir, default=None)
     args = parser.parse_args()
 
     # for saving training metrics
     run_name = create_run_name() if args.run_name is None else args.run_name
-    result_dir = create_result_dir(run_name)
+    result_dir = create_result_dir(run_name, args.root_dir)
     csv = CSVSaver(os.path.join(result_dir, "stats"), "accuracy", "loss")
 
     if args.checkpoint_file is None:
