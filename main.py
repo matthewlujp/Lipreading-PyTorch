@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
         # specify pretrained frontend model when training backend
         if options["general"]["train_target"] == 'backend':
-            load_pretrained(model, options["general"]["frontend_pretrained_modelpath"]), freeze=true)
+            load_pretrained(model, options["general"]["frontend_pretrained_modelpath"]), freeze=True)
     else:
         state_dict, grad_states, states = load_chekpoint(args.checkpoint_file)
         options = states['options']
