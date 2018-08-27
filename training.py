@@ -75,13 +75,13 @@ class Trainer():
                 optimizer.step()
 
                 correct_count += validator_function(outputs, labels)
-                summed_loss += loss.data * len(sample_batched)
+                summed_loss += float(loss.data) * len(sample_batched['label'])
                 total_samples += len(sample_batched['label'])
 
                 estimated_remaining_time = estimate_remaining_time(i_batch, datetime.now() - startTime, len(self.trainingdataloader))
-                t.set_postfix(loss=float(summed_loss.data)/total_samples, acc=correct_count/total_samples, rest_time=estimated_remaining_time)
+                t.set_postfix(loss=summed_loss/total_samples, acc=correct_count/total_samples, rest_time=estimated_remaining_time)
                 t.update()
 
-        print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(float(summed_loss.data)/total_samples, correct_count/total_samples))
+        print("Epoch completed, avg loss {}, avg acc {}, saving state...".format(summed_loss/total_samples, correct_count/total_samples))
 
-        return float(summed_loss.data)/total_samples
+        return summed_loss/total_samples

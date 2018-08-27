@@ -1,5 +1,3 @@
-title = "TOML Example"
-
 [general]
 usecudnn = true
 usecudnnbenchmark = true
@@ -8,9 +6,8 @@ frontend_pretrained_model_path = "frontend_trained_model.pt"
 savemodel = true
 
 [input]
-batchsize = 128
-frameslen = 29
-numworkers = 31
+batchsize = 
+numworkers = 
 shuffle = true
 
 [model]
