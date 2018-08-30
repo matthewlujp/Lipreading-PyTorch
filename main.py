@@ -73,9 +73,6 @@ if __name__ == '__main__':
         if options["general"]["train_target"] == 'backend':
             load_pretrained(model, options["general"]["frontend_pretrained_model_path"], freeze=True)
 
-            # temporal process
-            for n, p in model.lstm.named_parameters():
-                p.requires_grad_(True)
     else:
         state_dict, grad_states, states = load_checkpoint(args.checkpoint_file)
         options = states['options']

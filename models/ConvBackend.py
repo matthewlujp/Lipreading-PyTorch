@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 def _validate(modelOutput, labels):
     maxvalues, maxindices = torch.max(modelOutput.data, 1)
 
@@ -14,11 +15,17 @@ def _validate(modelOutput, labels):
 
     return count
 
+
 class ConvBackend(nn.Module):
+
+
+
     def __init__(self, options):
         super(ConvBackend, self).__init__()
 
         bn_size = 256
+
+
         self.conv1 = nn.Conv1d(bn_size,2 * bn_size ,2, 2)
         self.norm1 = nn.BatchNorm1d(bn_size * 2)
         self.pool1 = nn.MaxPool1d(2, 2)

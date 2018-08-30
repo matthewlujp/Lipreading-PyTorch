@@ -16,13 +16,13 @@ class LipRead(nn.Module):
         super(LipRead, self).__init__()
         self.frontend = ConvFrontend()
         self.resnet = ResNetBBC(options)
-        self.backend = ConvBackend(options)
-        self.lstm = LSTMBackend(options)
 
         self.type = options["model"]["type"]
         if self.type == "temp-conv":
+            self.backend = ConvBackend(options)
             self.model = nn.Sequential(self.frontend, self.resnet, self.backend)
         elif self.type == "LSTM":
+            self.lstm = LSTMBackend(options)
             self.model = nn.Sequential(self.frontend, self.resnet, self.lstm)
 
         if cuda.is_available():
