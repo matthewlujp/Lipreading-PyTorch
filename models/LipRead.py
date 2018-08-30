@@ -36,14 +36,19 @@ class LipRead(nn.Module):
         #classname with a regular expression to determine the type of the module, then
         #initializes the weights for it.
         def weights_init(m):
+            
             classname = m.__class__.__name__
             if re.search("Conv[123]d", classname):
-                m.weight.data.normal_(0.0, 0.02)
+                if m.weight.requires_grad:
+                    m.weight.data.normal_(0.0, 0.02)
             elif re.search("BatchNorm[123]d", classname):
-                m.weight.data.fill_(1.0)
-                m.bias.data.fill_(0)
+                if m.weight.requires_grad:
+                    m.weight.data.fill_(1.0)
+                if m.bias.requires_grad:
+                    m.bias.data.fill_(0)
             elif re.search("Linear", classname):
-                m.bias.data.fill_(0)
+                if m.bias.requires_grad:
+                    m.bias.data.fill_(0)
 
         #Apply weight initialization to every module in the model.
         self.apply(weights_init)

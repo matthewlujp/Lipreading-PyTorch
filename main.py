@@ -29,7 +29,7 @@ def load_pretrained(model: nn.Module, pretrained_model_filepath: str, freeze: bo
         # free already trained parameters
         for name, param in model.named_parameters():
             if name in pretrained_dict.keys():
-                param.require_grad_(False)
+                param.requires_grad_(False)
 
 
 def create_run_name() -> str:
@@ -71,13 +71,22 @@ if __name__ == '__main__':
 
         # specify pretrained frontend model when training backend
         if options["general"]["train_target"] == 'backend':
-            load_pretrained(model, options["general"]["frontend_pretrained_modelpath"], freeze=True)
+            load_pretrained(model, options["general"]["frontend_pretrained_model_path"], freeze=True)
+
+            # temporal process
+            for n, p in model.lstm.named_parameters():
+                p.requires_grad_(True)
     else:
         state_dict, grad_states, states = load_checkpoint(args.checkpoint_file)
         options = states['options']
         model = LipRead(options)
         load_model(model, state_dict, grad_states) # load weights and freeze states
         last_epoch = states["epoch"] + 1
+
+    
+    # save current option
+    with open(os.path.join(result_dir, "options_used.toml"), 'w') as f:
+        toml.dump(options, f)
 
 
     if(options["general"]["usecudnnbenchmark"] and options["general"]["usecudnn"]):
