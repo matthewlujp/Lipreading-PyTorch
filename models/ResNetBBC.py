@@ -87,6 +87,38 @@ class BasicBlock(nn.Module):
         return out
 
 
+class BasicBlockPreActive(nn.Module):
+    expansion = 1
+
+    def __init__(self, inplanes, planes, stride=1, downsample=None):
+        super(BasicBlockPreActive, self).__init__()
+        self.bn1 = nn.BatchNorm2d(inplanes)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv1 = conv3x3(inplanes, planes, stride)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.conv2 = conv3x3(planes, planes)
+        self.downsample = downsample
+        self.stride = stride
+
+    def forward(self, x):
+        residual = x
+
+        out = self.bn1(x)
+        out = self.relu(out)
+        out = self.conv1(out)
+
+        out = self.bn2(out)
+        out = self.relu(out)
+        out = self.conv2(out)
+
+        if self.downsample is not None:
+            residual = self.downsample(x)
+
+        out += residual
+
+        return out
+
+
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -184,6 +216,28 @@ class ResNet(nn.Module):
         return x
 
 
+class ResNetPreActive(ResNet):
+    """Use pre-activation in Residual Units.
+    [Identity mapping in deep residual networks](https://arxiv.org/abs/1603.05027)
+    """
+
+    def forward(self, x):
+        x = self.relu(x)  # activation before splitting [Identity mapping in deep residual networks]
+
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+
+        x = self.relu(x)  # activation after the last Residual Unit [Identity mapping in deep residual networks]
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
+        x = self.bn2(x)
+
+        return x
+
+
 def resnet18(pretrained=False, **kwargs):
     """Constructs a ResNet-18 model.
 
@@ -193,6 +247,18 @@ def resnet18(pretrained=False, **kwargs):
     model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
+    return model
+
+
+def resnet18_preactive(pretrained=False, **kwargs):
+    """Constructs a ResNet-18 model.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = ResNetPreActive(BasicBlockPreActive, [2, 2, 2, 2], **kwargs)
+    if pretrained:
+        raise Exception("no pretrained model for pre-activation resnet")
     return model
 
 
@@ -243,11 +309,16 @@ def resnet152(pretrained=False, **kwargs):
         model.load_state_dict(model_zoo.load_url(model_urls['resnet152']))
     return model
 
+
 class ResNetBBC(nn.Module):
     def __init__(self, options):
         super(ResNetBBC, self).__init__()
         self.inputdims = options["model"]["inputdim"]
-        self.resnetModel = resnet18(False, num_classes=self.inputdims)
+
+        if options["model"]["resnet_activation"] == "pre-activation":
+            self.resnetModel = resnet18_preactive(False, num_classes=self.inputdims)
+        else:
+            self.resnetModel = resnet18(False, num_classes=self.inputdims)
 
     def forward(self, input):
         # input.shape == (batch_size, 64, frames_len, 28, 28)
@@ -258,3 +329,4 @@ class ResNetBBC(nn.Module):
         output = self.resnetModel(view) # (batch_size x frames_len, 256)
         output = output.view(-1, frames_len, 256)
         return output
+

@@ -11,6 +11,7 @@ shuffle = true
 
 [model]
 type = "temp-conv"
+resnet_activation = "pre-active"
 inputdim = 256
 hiddendim = 256
 numclasses = 500
