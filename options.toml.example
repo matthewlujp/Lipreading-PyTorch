@@ -21,7 +21,6 @@ numlstms = 2
 train = true
 epochs = 30
 startepoch = 0
-statsfrequency = 1000
 dataset = ""
 learningrate = 0.003
 momentum = 0.9

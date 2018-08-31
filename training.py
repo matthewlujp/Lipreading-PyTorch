@@ -1,13 +1,14 @@
-from torch.autograd import Variable
-import torch
-import torch.optim as optim
-import torch.cuda as cuda
-from datetime import datetime, timedelta
-from data import LipreadingDataset
-from torch.utils.data import DataLoader
 import os
+import sys
 import math
+from datetime import datetime, timedelta
+import torch
+from torch.autograd import Variable
+import torch.cuda as cuda
+import torch.optim as optim
+from torch.utils.data import DataLoader
 from tqdm import tqdm
+from data import LipreadingDataset
 from utils import *
 
 
@@ -21,11 +22,13 @@ class Trainer():
                                     num_workers=options["input"]["numworkers"],
                                     drop_last=True
                                 )
+
+        if len(self.trainingdataset) == 0:
+            print("WARN: no data for training", file=sys.stderr)
+
         self.usecudnn = options["general"]["usecudnn"]
 
         self.batchsize = options["input"]["batchsize"]
-
-        self.statsfrequency = options["training"]["statsfrequency"]
 
         self.learningrate = options["training"]["learningrate"]
 
@@ -58,7 +61,7 @@ class Trainer():
         summed_loss = 0
         total_samples = 0
         
-        with tqdm(total=len(self.trainingdataloader), desc="Epoch {:02}".format(epoch), ascii=False, ncols=150) as t:
+        with tqdm(total=len(self.trainingdataloader), desc="Epoch {:02}".format(epoch), ncols=150) as t:
             for i_batch, sample_batched in enumerate(self.trainingdataloader):
                 optimizer.zero_grad()
                 input = Variable(sample_batched['temporalvolume'])
