@@ -13,7 +13,6 @@ class LipreadingDataset(Dataset):
         for i, label in enumerate(labels):
 
             dirpath = dir + "/{}/{}".format(label, set)
-            # print(i, label, dirpath)
 
             files = os.listdir(dirpath)
 
