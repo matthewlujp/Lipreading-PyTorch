@@ -33,7 +33,7 @@ class Validator():
         validator_function = model.validator_function()
         startTime = datetime.now()
         
-        with tqdm(total=len(self.validationdataloader), desc="validation", ascii=False, ncols=150) as t:
+        with tqdm(total=len(self.validationdataloader), desc="validation", ncols=150) as t:
             for i_batch, sample_batched in enumerate(self.validationdataloader):
                 input = Variable(sample_batched['temporalvolume'])
                 labels = sample_batched['label']

@@ -78,7 +78,7 @@ if __name__ == '__main__':
         options = states['options']
         model = LipRead(options)
         load_model(model, state_dict, grad_states) # load weights and freeze states
-        last_epoch = states["epoch"] + 1
+        last_epoch = states["epoch"]
 
     
     # save current option
