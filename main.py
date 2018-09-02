@@ -14,16 +14,16 @@ from csv_saver import CSVSaver
 
 
 def load_pretrained(model: nn.Module, pretrained_model_filepath: str, freeze: bool):
-    # load pretrained model
-    pretrained_dict = torch.load(pretrained_model_filepath)
+    if cuda.is_available():
+        pretrained_dict = torch.load(pretrained_model_filepath)
+    else:
+        pretrained_dict = torch.load(pretrained_model_filepath, map_location=lambda storage, loc: storage)
+
     model_dict = model.state_dict()
 
     pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
     model_dict.update(pretrained_dict) 
-    if cuda.is_available():
-        model.load_state_dict(model_dict)
-    else:
-        model.load_state_dict(model_dict, map_location=lambda storage, loc: storage)
+    model.load_state_dict(model_dict)
 
     if freeze:
         # free already trained parameters
