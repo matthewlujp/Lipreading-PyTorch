@@ -26,8 +26,8 @@ class LipRead(nn.Module):
             self.lstm = LSTMBackend(options)
             self.model = nn.Sequential(self.frontend, self.resnet, self.lstm)
         elif self.type == "fully-conv":
-            self.lstm = LSTMBackend(options)
-            self.model = nn.Sequential(self.frontend, self.resnet, self.lstm)
+            self.fcback = FCBackend(options)
+            self.model = nn.Sequential(self.frontend, self.resnet, self.fcback)
 
         if cuda.is_available():
             self.model = self.model.cuda()
@@ -57,15 +57,21 @@ class LipRead(nn.Module):
         return self.model.forward(input)
 
     def loss(self):
-        if(self.type == "temp-conv"):
+        if self.type == "temp-conv":
             return self.backend.loss
 
-        if(self.type == "LSTM" or self.type == "LSTM-init"):
+        if self.type == "LSTM":
             return self.lstm.loss
 
+        if self.type == "fully-conv":
+            return self.fcback.loss
+
     def validator_function(self):
-        if(self.type == "temp-conv"):
+        if self.type == "temp-conv":
             return self.backend.validator
 
-        if(self.type == "LSTM" or self.type == "LSTM-init"):
+        if self.type == "LSTM":
             return self.lstm.validator
+
+        if self.type == "fully-conv":
+            return self.fcback.validator
