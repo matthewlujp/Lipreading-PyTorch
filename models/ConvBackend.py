@@ -42,6 +42,8 @@ class ConvBackend(nn.Module):
         self.validator = _validate
 
     def forward(self, input):
+        # input.shape == (batch, frames, feature_dim)
+
         transposed = input.transpose(1, 2).contiguous()
 
         output = self.conv1(transposed)

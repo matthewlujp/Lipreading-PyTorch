@@ -37,6 +37,8 @@ class Trainer():
         self.weightdecay = options["training"]["weightdecay"]
         self.momentum = options["training"]["momentum"]
 
+        self.model = options['model']['type']
+
     def learningRate(self, epoch):
         decay = math.floor((epoch - 1) / 5)
         return self.learningrate * pow(0.5, decay)
@@ -44,11 +46,17 @@ class Trainer():
     def epoch(self, model, epoch) -> float:
         #set up the loss function.
         criterion = model.loss()
-        optimizer = optim.SGD(
-                        model.parameters(),
-                        lr = self.learningRate(epoch),
-                        momentum = self.learningrate,
-                        weight_decay = self.weightdecay)
+        if self.model == "fully-conv":
+            optimizer = optim.Adam(
+                model.parameters(),
+                lr=self.learningRate(epoch,)
+            )
+        else:
+            optimizer = optim.SGD(
+                            model.parameters(),
+                            lr = self.learningRate(epoch),
+                            momentum = self.learningrate,
+                            weight_decay = self.weightdecay)
         validator_function = model.validator_function()
 
         #transfer the model to the GPU.

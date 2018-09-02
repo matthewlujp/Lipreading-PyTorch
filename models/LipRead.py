@@ -10,6 +10,7 @@ from .ConvFrontend import ConvFrontend
 from .ResNetBBC import ResNetBBC
 from .LSTMBackend import LSTMBackend
 from .ConvBackend import ConvBackend
+from .FCBackend import FCBackend
 
 class LipRead(nn.Module):
     def __init__(self, options):
@@ -22,6 +23,9 @@ class LipRead(nn.Module):
             self.backend = ConvBackend(options)
             self.model = nn.Sequential(self.frontend, self.resnet, self.backend)
         elif self.type == "LSTM":
+            self.lstm = LSTMBackend(options)
+            self.model = nn.Sequential(self.frontend, self.resnet, self.lstm)
+        elif self.type == "fully-conv":
             self.lstm = LSTMBackend(options)
             self.model = nn.Sequential(self.frontend, self.resnet, self.lstm)
 

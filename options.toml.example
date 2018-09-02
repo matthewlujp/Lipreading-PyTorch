@@ -16,6 +16,9 @@ inputdim = 256
 hiddendim = 256
 numclasses = 500
 numlstms = 2
+fc_back_kernel_size = 5
+fc_back_stack = 15
+dropout_prob = 0.8
 
 [training]
 train = true
