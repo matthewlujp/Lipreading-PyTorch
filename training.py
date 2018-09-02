@@ -44,7 +44,8 @@ class Trainer():
         return self.learningrate * pow(0.5, decay)
 
     def epoch(self, model, epoch) -> float:
-        #set up the loss function.
+        model = model.train()
+        
         criterion = model.loss()
         if self.model == "fully-conv":
             optimizer = optim.Adam(

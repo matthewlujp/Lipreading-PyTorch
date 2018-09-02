@@ -28,6 +28,8 @@ class Validator():
         self.save_dir = save_dir
 
     def epoch(self, model, epoch) -> float:
+        model = model.eval()
+
         count = 0
         total_samples_amount = 0
         validator_function = model.validator_function()
