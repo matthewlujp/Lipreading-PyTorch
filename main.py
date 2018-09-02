@@ -81,7 +81,7 @@ if __name__ == '__main__':
         last_epoch = states["epoch"]
 
     
-    # save current option
+    # save current options
     with open(os.path.join(result_dir, "options_used.toml"), 'w') as f:
         toml.dump(options, f)
 

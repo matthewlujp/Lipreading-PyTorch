@@ -1,6 +1,6 @@
+import os
 from torch.utils.data import Dataset
 from .preprocess import *
-import os
 
 class LipreadingDataset(Dataset):
     """BBC Lip Reading dataset."""
