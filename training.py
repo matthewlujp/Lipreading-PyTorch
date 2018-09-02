@@ -42,7 +42,8 @@ class Trainer():
         return self.learningrate * pow(0.5, decay)
 
     def epoch(self, model, epoch) -> float:
-        #set up the loss function.
+        model = model.train()
+        
         criterion = model.loss()
         optimizer = optim.SGD(
                         model.parameters(),

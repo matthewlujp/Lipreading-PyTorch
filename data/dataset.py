@@ -6,7 +6,7 @@ class LipreadingDataset(Dataset):
     """BBC Lip Reading dataset."""
 
     def build_file_list(self, dir, set):
-        labels = os.listdir(dir)
+        labels = sorted(os.listdir(dir))
 
         completeList = []
 
