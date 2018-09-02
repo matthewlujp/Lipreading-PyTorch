@@ -57,8 +57,9 @@ class NLLSequenceLoss(nn.Module):
         target shape is (batch_size)
         """
         loss = 0.0
+        frames_len = prediction.shape[1]
         transposed = prediction.transpose(0, 1).contiguous()  # (frames_len, batch_size, class_num)
-        for i in range(prediction.shape[0]):
+        for i in range(frames_len):
             # print("prediction", prediction.shape, "target", target.shape, file=sys.stderr)
             loss += self.criteria(transposed[i], target)
         return loss
