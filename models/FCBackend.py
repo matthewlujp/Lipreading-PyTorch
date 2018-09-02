@@ -1,4 +1,5 @@
 import sys
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -53,12 +54,13 @@ class NLLSequenceLoss(nn.Module):
 
     def forward(self, prediction, target):
         """prediction.shape is (batch_size, frames_len, class_num)
-        target shape is (batch_size, 1)
+        target shape is (batch_size)
         """
         loss = 0.0
         transposed = prediction.transpose(0, 1).contiguous()  # (frames_len, batch_size, class_num)
         for i in range(prediction.shape[0]):
-            loss += self.criteria(prediction[i], target.squeeze(1))
+            # print("prediction", prediction.shape, "target", target.shape, file=sys.stderr)
+            loss += self.criteria(transposed[i], target)
         return loss
 
 
@@ -82,7 +84,7 @@ class FCBackend(nn.Module):
     def __init__(self, options: dict):
         super().__init__()
 
-        input_dim = options['model']['input_dim']
+        input_dim = options['model']['inputdim']
         class_num = options["model"]["numclasses"]
         kernel_size = options['model']['fc_back_kernel_size']
         stack_amount = options['model']['fc_back_stack']
@@ -90,7 +92,7 @@ class FCBackend(nn.Module):
 
         self.stack = nn.Sequential(*[FCBlock(input_dim, kernel_size, dropout_p) for _ in range(stack_amount)])
         self.fc = nn.Linear(input_dim, class_num)
-        self.log_softmax = nn.LogSoftmax()
+        self.log_softmax = nn.LogSoftmax(dim=2)
 
         self.loss = NLLSequenceLoss()
 
