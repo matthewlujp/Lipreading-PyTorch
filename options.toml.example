@@ -2,7 +2,7 @@
 usecudnn = true
 usecudnnbenchmark = true
 train_target = "frontend"
-frontend_pretrained_model_path = "frontend_trained_model.pt"
+frontend_pretrained_model_path = ""
 
 [input]
 batchsize = 
@@ -11,7 +11,7 @@ shuffle = true
 
 [model]
 type = "temp-conv"
-resnet_activation = "pre-active"
+resnet_activation = "pre-activation"
 inputdim = 256
 hiddendim = 256
 numclasses = 500
@@ -31,4 +31,3 @@ weightdecay = 0.0001
 validate = true
 dataset = ""
 use_frames = false
-saveaccuracy = true

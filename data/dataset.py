@@ -21,7 +21,7 @@ class LipreadingDataset(Dataset):
 
         return labels, completeList
 
-    def build_frames_file_list(self, dir: str, set: str):
+    def build_frames_dir_list(self, dir: str, set: str):
         labels = sorted(os.listdir(dir))
 
         completeList = []
