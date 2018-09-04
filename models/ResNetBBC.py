@@ -317,7 +317,7 @@ class ResNetBBC(nn.Module):
 
         if options["model"]["resnet_activation"] == "pre-activation":
             self.resnetModel = resnet18_preactive(False, num_classes=self.inputdims)
-        elif options["model"]["resnet_activation"] == "post-activation"::
+        elif options["model"]["resnet_activation"] == "post-activation":
             self.resnetModel = resnet18(False, num_classes=self.inputdims)
         else:
             raise Exception("invalid option is given for resnet_activation: {}".format(options["model"]["resnet_activation"]))
