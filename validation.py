@@ -13,7 +13,7 @@ from utils import *
 class Validator():
     def __init__(self, options, save_dir):
 
-        self.validationdataset = LipreadingDataset(options["validation"]["dataset"], "val", False)
+        self.validationdataset = LipreadingDataset(options["validation"]["dataset"], "val", augment=False, use_frames=options['training']['use_frames'])
         self.validationdataloader = DataLoader(
                                     self.validationdataset,
                                     batch_size=options["input"]["batchsize"],

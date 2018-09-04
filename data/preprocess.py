@@ -1,3 +1,4 @@
+import os
 import imageio
 
 imageio.plugins.ffmpeg.download()
@@ -25,6 +26,26 @@ def load_video(filename):
         image = functional.to_tensor(image)
         frames.append(image)
     return frames
+
+
+def load_frames(dirpath: str):
+    """Loads the specified video frames.
+
+    Args:
+        filename (str): The path to the dir where frames of a video are stored.
+
+    Returns:
+        List[FloatTensor]: the frames of the video as a list of 3D tensors
+            (channels, width, height)"""
+
+    frames = []
+    for filename in sorted(os.listdir(dirpath)):
+        if filename.endswith(".png"):
+            v = imageio.read(os.path.join(dirpath, filename))
+            image = functional.to_tensor(v.get_data(0))
+            frames.append(image)
+    return frames
+
 
 def bbc(vidframes, augmentation=True):
     """Preprocesses the specified list of frames by center cropping.

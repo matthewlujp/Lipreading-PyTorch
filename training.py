@@ -14,7 +14,7 @@ from utils import *
 
 class Trainer():
     def __init__(self, options):
-        self.trainingdataset = LipreadingDataset(options["training"]["dataset"], "train")
+        self.trainingdataset = LipreadingDataset(options["training"]["dataset"], "train", use_frames=options['training']['use_frames'])
         self.trainingdataloader = DataLoader(
                                     self.trainingdataset,
                                     batch_size=options["input"]["batchsize"],
