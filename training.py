@@ -35,21 +35,32 @@ class Trainer():
         self.modelType = options["training"]["learningrate"]
 
         self.weightdecay = options["training"]["weightdecay"]
+        self.learning_decay_rate = options["training"]["learning_decay_rate"]
         self.momentum = options["training"]["momentum"]
+        self.optimizer = options["training"]["optimizer"]
 
     def learningRate(self, epoch):
-        decay = math.floor((epoch - 1) / 5)
+        decay = math.floor((epoch - 1) * self.learning_decay_rate)
         return self.learningrate * pow(0.5, decay)
 
     def epoch(self, model, epoch) -> float:
         model = model.train()
         
         criterion = model.loss()
-        optimizer = optim.SGD(
-                        model.parameters(),
-                        lr = self.learningRate(epoch),
-                        momentum = self.learningrate,
-                        weight_decay = self.weightdecay)
+        if self.optimizer == 'Adam':
+            optimizer = optim.Adam(
+                            model.parameters(),
+                            lr = self.learningRate(epoch),
+                            weight_decay = self.weightdecay)
+        elif self.optimizer == 'SGD':
+            optimizer = optim.SGD(
+                            model.parameters(),
+                            lr = self.learningRate(epoch),
+                            momentum = self.learningrate,
+                            weight_decay = self.weightdecay)
+        else:
+            raise Exception("{} not valid optimizer".format(self.optimizer))
+            
         validator_function = model.validator_function()
 
         #transfer the model to the GPU.

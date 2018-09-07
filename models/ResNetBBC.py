@@ -274,6 +274,18 @@ def resnet34(pretrained=False, **kwargs):
     return model
 
 
+def resnet34_preactive(pretrained=False, **kwargs):
+    """Constructs a ResNet-18 model.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """
+    model = ResNetPreActive(BasicBlockPreActive, [3, 4, 6, 3], **kwargs)
+    if pretrained:
+        raise Exception("no pretrained model for pre-activation resnet")
+    return model
+
+
 def resnet50(pretrained=False, **kwargs):
     """Constructs a ResNet-50 model.
 
@@ -316,9 +328,9 @@ class ResNetBBC(nn.Module):
         self.inputdims = options["model"]["inputdim"]
 
         if options["model"]["resnet_activation"] == "pre-activation":
-            self.resnetModel = resnet18_preactive(False, num_classes=self.inputdims)
+            self.resnetModel = resnet34_preactive(False, num_classes=self.inputdims)
         elif options["model"]["resnet_activation"] == "post-activation":
-            self.resnetModel = resnet18(False, num_classes=self.inputdims)
+            self.resnetModel = resnet34(False, num_classes=self.inputdims)
         else:
             raise Exception("invalid option is given for resnet_activation: {}".format(options["model"]["resnet_activation"]))
 
