@@ -1,0 +1,38 @@
+[general]
+usecudnn = true
+usecudnnbenchmark = true
+train_target = "backend"
+frontend_pretrained_model_path = "model_ep26.pt"
+
+[input]
+batchsize = 4
+numworkers = 31
+shuffle = true
+
+[model]
+type = "LSTM"
+resnet_activation = "pre-activation"
+inputdim = 256
+hiddendim = 256
+numclasses = 500
+numlstms = 2
+fc_back_kernel_size = 5
+fc_back_stack = 15
+dropout_prob = 0.8
+
+[training]
+train = true
+epochs = 30
+startepoch = 0
+dataset = "lipread_mp4"
+use_frames = false
+learningrate = 0.003
+learning_decay_rate = 0.08
+momentum = 0.9
+weightdecay = 0.0001
+optimizer = "Adam"
+
+[validation]
+validate = true
+dataset = "lipread_mp4"
+use_frames = false
