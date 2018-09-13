@@ -99,7 +99,7 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument("save_dir", help="directory to save data")
     parser.add_argument("word", help="videos are saved as word_001.mp4")
-    parser.add_argument("-d", dest="duration", type=float, default=3.0, help="video duration")
+    parser.add_argument("-d", dest="duration", type=float, default=2.0, help="video duration")
     args = parser.parse_args()
 
     print("------------------------------------------------------------------------------------------------------------")
