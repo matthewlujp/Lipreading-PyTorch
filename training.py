@@ -48,7 +48,7 @@ class Trainer():
         optimizer = optim.SGD(
                         model.parameters(),
                         lr = self.learningRate(epoch),
-                        momentum = self.learningrate,
+                        momentum = self.momentum,
                         weight_decay = self.weightdecay)
         validator_function = model.validator_function()
 
