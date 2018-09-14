@@ -76,7 +76,7 @@ def bbc(vidframes, augmentation=True):
             flip
         ])
 
-    gray_frame = functional.to_grayscale(vidframes[0])
+    gray_frame = functional.to_grayscale(functional.to_pil_image(vidframes[0]))
     mean = torch.mean(gray_frame)
     std = torch.std(gray_frame)
 
