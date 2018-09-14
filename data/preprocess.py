@@ -61,7 +61,8 @@ def bbc(vidframes, augmentation=True):
         FloatTensor: The video as a temporal volume, represented as a 5D tensor
             (batch, channel, time, width, height)"""
 
-    temporalvolume = torch.FloatTensor(1,29,112,112)
+    # temporalvolume = torch.FloatTensor(1,29,112,112)
+    temporalvolume = torch.FloatTensor(1,50,112,112)
 
     croptransform = transforms.CenterCrop((112, 112))
 
