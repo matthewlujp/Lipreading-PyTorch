@@ -76,10 +76,9 @@ def bbc(vidframes, augmentation=True):
             flip
         ])
 
-    print(vidframes[0].shape)
-    gray_frame = cv2.cvtColor(vidframes[0], cv2.COLOR_BGR2GRAY)
-    mean = np.mean(gray_frame)
-    std = np.std(gray_frame)
+    gray_frame = F.to_grayscale(vidframes[0])
+    mean = torch.mean(gray_frame)
+    std = torch.std(gray_frame)
 
     for i in range(0, 50):
         result = transforms.Compose([
