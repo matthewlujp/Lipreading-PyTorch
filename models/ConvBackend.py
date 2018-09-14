@@ -35,7 +35,7 @@ class ConvBackend(nn.Module):
 
         self.linear = nn.Linear(4*bn_size, bn_size)
         self.norm3 = nn.BatchNorm1d(bn_size)
-        self.linear2 = nn.Linear(bn_size, 500)
+        self.linear2 = nn.Linear(bn_size, options['model']['numclasses'])
 
         self.loss = nn.CrossEntropyLoss()
 

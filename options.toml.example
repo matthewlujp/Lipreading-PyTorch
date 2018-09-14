@@ -14,7 +14,7 @@ type = "temp-conv"
 resnet_activation = "pre-activation"
 inputdim = 256
 hiddendim = 256
-numclasses = 500
+numclasses = 8
 numlstms = 2
 
 [training]
