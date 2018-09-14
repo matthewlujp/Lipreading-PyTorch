@@ -67,7 +67,7 @@ if __name__ == '__main__':
     parser = ArgumentParser(description="train LipReading-ResNet")
     parser.add_argument("--run_name", dest="run_name", default=None)
     parser.add_argument("--checkpoint", dest="checkpoint_file", default=None)
-    parser.add_argument("--final_epoch", dest="final_epoch", default=None)
+    parser.add_argument("--final_epoch", dest="final_epoch", type=int, default=None)
     parser.add_argument("--root_dir", dest="root_dir", default=None)
     args = parser.parse_args()
 

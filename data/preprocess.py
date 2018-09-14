@@ -1,4 +1,6 @@
 import os
+import numpy as np
+import cv2
 import imageio
 
 imageio.plugins.ffmpeg.download()
@@ -61,7 +63,6 @@ def bbc(vidframes, augmentation=True):
         FloatTensor: The video as a temporal volume, represented as a 5D tensor
             (batch, channel, time, width, height)"""
 
-    # temporalvolume = torch.FloatTensor(1,29,112,112)
     temporalvolume = torch.FloatTensor(1,50,112,112)
 
     croptransform = transforms.CenterCrop((112, 112))
@@ -75,7 +76,11 @@ def bbc(vidframes, augmentation=True):
             flip
         ])
 
-    # for i in range(0, 29):
+    print(vidframes[0].shape)
+    gray_frame = cv2.cvtColor(vidframes[0], cv2.COLOR_BGR2GRAY)
+    mean = np.mean(gray_frame)
+    std = np.std(gray_frame)
+
     for i in range(0, 50):
         result = transforms.Compose([
             transforms.ToPILImage(),
@@ -83,7 +88,8 @@ def bbc(vidframes, augmentation=True):
             croptransform,
             transforms.Grayscale(num_output_channels=1),
             transforms.ToTensor(),
-            transforms.Normalize([0.4161,],[0.1688,]),
+            # transforms.Normalize([0.4161,],[0.1688,]),
+            transforms.Normalize([mean,],[std,]),
         ])(vidframes[i])
 
         temporalvolume[0][i] = result
