@@ -21,7 +21,8 @@ def load_video(filename):
 
     vid = imageio.get_reader(filename,  'ffmpeg')
     frames = []
-    for i in range(0, 29):
+    # for i in range(0, 29):
+    for i in range(0, 50):
         image = vid.get_data(i)
         image = functional.to_tensor(image)
         frames.append(image)
@@ -73,7 +74,8 @@ def bbc(vidframes, augmentation=True):
             flip
         ])
 
-    for i in range(0, 29):
+    # for i in range(0, 29):
+    for i in range(0, 50):
         result = transforms.Compose([
             transforms.ToPILImage(),
             transforms.CenterCrop((122, 122)),
