@@ -32,6 +32,7 @@ RIGHT_EYEBROW_IDX = 19
 CHEEK_IDX = 9
 
 FPS = 25
+DEFAULT_DURATION = 1.6
 OUT_SIZE = 256
 ORG_WIDTH = 1280
 ORG_HEIGHT = 720
@@ -131,7 +132,7 @@ def crop_sq(image: np.ndarray, fpoints, out_length: int) -> np.ndarray:
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument("-d", dest="duration", type=float, default=2.0, help="video duration")
+    parser.add_argument("-d", dest="duration", type=float, default=DEFAULT_DURATION, help="video duration")
     args = parser.parse_args()
 
     print("------------------------------------------------------------------------------------------------------------")
