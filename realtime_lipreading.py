@@ -18,7 +18,7 @@ imageio.plugins.ffmpeg.download()
 import torch
 import torchvision.transforms.functional as F
 
-from data.preprocess import bbc
+from data.preprocess import bbc, load_video
 from models import LipRead
 
 
@@ -32,7 +32,7 @@ RIGHT_EYEBROW_IDX = 19
 CHEEK_IDX = 9
 
 FPS = 25
-OUT_SIZE = 122
+OUT_SIZE = 256
 ORG_WIDTH = 1280
 ORG_HEIGHT = 720
 
@@ -61,6 +61,17 @@ model = model.eval()
 
 
 words_list = sorted(os.listdir('train_data'))
+
+
+def save_as_video(frames: list, save_path: str):
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    vwriter = cv2.VideoWriter(save_path, fourcc, FPS, (OUT_SIZE, OUT_SIZE))
+    
+    for frame in frames:
+        vwriter.write(frame)
+    
+    vwriter.release()
+
 
 
 def lipread(frames: list) -> str:
