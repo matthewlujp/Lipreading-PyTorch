@@ -18,12 +18,12 @@ imageio.plugins.ffmpeg.download()
 import torch
 import torchvision.transforms.functional as F
 
-from data.preprocess import bbc, load_video
-from models import LipRead
+from .data.preprocess import bbc, load_video
+from .models import LipRead
 
 
 face_detector = dlib.get_frontal_face_detector()
-shape_predictor = dlib.shape_predictor("./shape_predictor_68_face_landmarks.dat")
+shape_predictor = dlib.shape_predictor(os.path.dirname(__file__) + "/shape_predictor_68_face_landmarks.dat")
 
 
 RIGHT_IDX = 3
@@ -38,7 +38,7 @@ ORG_WIDTH = 1280
 ORG_HEIGHT = 720
 
 
-with open("results/pretrained/jap4/options_used.toml", 'r') as f:
+with open(os.path.dirname(__file__) + "/results/pretrained/jap4/options_used.toml", 'r') as f:
     options = toml.loads(f.read())
 model = LipRead(options)
 
@@ -56,13 +56,13 @@ def load_relevant_params(model, loaded_state_dict):
     model.load_state_dict(state_dict)
 
 
-state_dict = torch.load("results/pretrained/jap4/epoch29.pt", map_location=lambda storage, loc: storage)
+state_dict = torch.load(os.path.dirname(__file__) + "/results/pretrained/jap4/epoch29.pt", map_location=lambda storage, loc: storage)
 load_relevant_params(model, state_dict)
 model = model.eval()
 
 
-words_list = sorted(os.listdir('train_data'))
-
+words_list = sorted(os.listdir(os.path.dirname(__file__) + '/train_data'))
+# words_list = sorted(["こんにちは", "あいたい", "あう", "きょう", "げんき", "たのしい", "とても", ""])
 
 def save_as_video(frames: list, save_path: str):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
