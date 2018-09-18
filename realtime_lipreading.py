@@ -67,9 +67,55 @@ load_relevant_params(model, state_dict)
 model = model.eval()
 
 
-words_list = sorted(os.listdir(os.path.dirname(__file__) + '/train_data'))
-# words_list = sorted(os.listdir(os.path.dirname(__file__) + 'train_data'))
-# words_list = sorted(["こんにちは", "あいたい", "あう", "きょう", "げんき", "たのしい", "とても", ""])
+# words_list = sorted(os.listdir(os.path.dirname(__file__) + '/train_data'))
+words_list = sorted(["anata", "ashita", "bhutan", "code", "demo", "doko", "dokusyo", "dou", "github", "hiromeru", "ichinichi", "itta", "kanazawa", "kanojo", "kenkyu", "konnichiwa",
+    "kyo", "lab", "liptalk", "lunch", "meeting", "moshimoshi", "murakamiharuki", "nani", "none", "programming", "push", "saikin", "sakusei", "sekai", "shibuya", "shita", "sonoato",
+    "syusyoku", "tabetai", "tanoshi", "totemo", "tsumaranai", "wo", "yojinbo", "yuhan", "yume"])
+
+words_dict = {
+    "anata": "あなた",
+    "ashita": "あした",
+    "bhutan": "ブータン",
+    "code": "コード",
+    "demo": "デモ",
+    "doko": "どこ",
+    "dokusyo": "読書",
+    "dou": "どう",
+    "github": "ギットハブ",
+    "hiromeru": "広める",
+    "ichinichi": "一日",
+    "itta": "行った",
+    "kanazawa": "金沢",
+    "kanojo": "彼女",
+    "kenkyu": "研究",
+    "konnichiwa": "こんにちは",
+    "kyo": "今日",
+    "lab": "ラボ",
+    "liptalk": "リップトーク",
+    "lunch": "ランチ",
+    "meeting": "ミーティング",
+    "moshimoshi": "もしもし",
+    "murakamiharuki": "村上春樹",
+    "nani": "何",
+    "none": "",
+    "programming": "プログラミング",
+    "push": "プッシュ",
+    "saikin": "最近",
+    "sakusei": "作成",
+    "sekai": "世界",
+    "shibuya": "渋谷",
+    "shita": "した",
+    "sonoato": "その後",
+    "syusyoku": "就職",
+    "tabetai": "食べたい",
+    "tanoshi": "楽しい",
+    "totemo": "とても",
+    "tsumaranai": "つまらない",
+    "wo": "を",
+    "yojinbo": "用心棒",
+    "yuhan": "夕飯",
+    "yume": "夢"
+}
 
 def save_as_video(frames: list, save_path: str):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -99,7 +145,7 @@ def lipread(frames: list) -> str:
     res = model(preprocessed[None]).squeeze(0)
 
     maxindex = torch.argmax(res)
-    return words_list[maxindex]
+    return words_dict[words_list[maxindex]]
 
     
 def process(frames: list) -> list:
