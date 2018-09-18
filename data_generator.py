@@ -34,6 +34,10 @@ ORG_HEIGHT = 720
 def process_and_save(frames: list, save_dir: str, word: str) -> str:
     save_path = os.path.join(save_dir, get_save_name(save_dir, word))
     proc_frames = process(frames)
+    if proc_frames is None or len(proc_frames) == 0:
+        print("failed to track face, abort")
+        return None
+
     save_as_video(proc_frames, save_path)
     return save_path
 

@@ -10,6 +10,9 @@ import torchvision.transforms as transforms
 import torch
 from .statefultransforms import StatefulRandomCrop, StatefulRandomHorizontalFlip
 
+
+FRAMES_NUM = 40
+
 def load_video(filename):
     """Loads the specified video using ffmpeg.
 
@@ -23,30 +26,10 @@ def load_video(filename):
 
     vid = imageio.get_reader(filename,  'ffmpeg')
     frames = []
-    # for i in range(0, 29):
-    for i in range(0, 50):
+    for i in range(0, FRAMES_NUM):
         image = vid.get_data(i)
         image = functional.to_tensor(image)
         frames.append(image)
-    return frames
-
-
-def load_frames(dirpath: str):
-    """Loads the specified video frames.
-
-    Args:
-        filename (str): The path to the dir where frames of a video are stored.
-
-    Returns:
-        List[FloatTensor]: the frames of the video as a list of 3D tensors
-            (channels, width, height)"""
-
-    frames = []
-    for filename in sorted(os.listdir(dirpath)):
-        if filename.endswith(".png"):
-            v = imageio.read(os.path.join(dirpath, filename))
-            image = functional.to_tensor(v.get_data(0))
-            frames.append(image)
     return frames
 
 
@@ -63,7 +46,7 @@ def bbc(vidframes, augmentation=True):
         FloatTensor: The video as a temporal volume, represented as a 5D tensor
             (batch, channel, time, width, height)"""
 
-    temporalvolume = torch.FloatTensor(1,50,112,112)
+    temporalvolume = torch.FloatTensor(1,FRAMES_NUM,112,112)
 
     croptransform = transforms.CenterCrop((112, 112))
 
@@ -80,7 +63,7 @@ def bbc(vidframes, augmentation=True):
     mean = torch.mean(gray_frame)
     std = torch.std(gray_frame)
 
-    for i in range(0, 50):
+    for i in range(0, FRAMES_NUM):
         result = transforms.Compose([
             transforms.ToPILImage(),
             transforms.CenterCrop((122, 122)),
